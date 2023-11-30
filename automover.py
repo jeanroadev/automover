@@ -2,20 +2,21 @@ import tkinter as tk
 import pyautogui
 import threading
 import time
+import random
 
 class MouseMoverApp:
     def __init__(self, root):
         self.root = root
+        self.root.geometry("300x150")
         self.root.title("AutoMover | JeanroaDev")
-        self.root.geometry("320x150")
+
+        self.is_running = False
 
         self.start_button = tk.Button(root, text="Iniciar", command=self.start_mouse_mover)
         self.start_button.pack(pady=20)
 
         self.stop_button = tk.Button(root, text="Detener", command=self.stop_mouse_mover)
         self.stop_button.pack(pady=10)
-
-        self.is_running = False
 
     def start_mouse_mover(self):
         if not self.is_running:
@@ -28,10 +29,18 @@ class MouseMoverApp:
 
     def move_mouse_periodically(self):
         while self.is_running:
-            pyautogui.moveRel(0, 5)  # Mover el mouse un píxel hacia abajo
-            time.sleep(8)  # Esperar 10 segundos
+            new_x = random.randint(0, pyautogui.size().width)
+            new_y = random.randint(0, pyautogui.size().height)
+            pyautogui.moveTo(new_x, new_y)
+            time.sleep(random.uniform(1, 5))
+
+    def on_exit(self):
+        self.root.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = MouseMoverApp(root)
+
+    # Mostrar la ventana
+    root.protocol("WM_DELETE_WINDOW", app.on_exit)
     root.mainloop()
